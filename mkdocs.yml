@@ -1,0 +1,140 @@
+site_name: MIINT
+site_url: https://the-miint.github.io/
+site_author: The MIINT Project
+site_description: >-
+  MIINT — Microbiome Intelligence. Open tools for columnar, SQL-native
+  analysis of microbiome sequence, alignment, phylogeny, and mass-spectrometry
+  data, and for managing multi-omic studies at scale.
+
+# Umbrella site for the-miint organization. Per-project docs (duckdb-miint) are
+# the source of truth in their own repos and are synced in at build time by
+# scripts/sync-duckdb-miint-docs.sh — see README.md.
+repo_url: https://github.com/the-miint
+repo_name: the-miint
+edit_uri: ""
+
+copyright: Copyright &copy; 2026 The MIINT Project
+
+theme:
+  name: material
+  logo: assets/miint-mark.png
+  favicon: assets/favicon.png
+  custom_dir: overrides
+  icon:
+    repo: fontawesome/brands/github
+  font:
+    text: Inter
+    code: JetBrains Mono
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+extra_css:
+  - stylesheets/brand.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/the-miint
+      name: MIINT on GitHub
+  generator: false
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Anchor link to this section
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - duckdb-miint:
+      - duckdb-miint/index.md
+      - Installation: duckdb-miint/installation.md
+      - Reading & writing:
+          - Reading files: duckdb-miint/reading.md
+          - Writing files: duckdb-miint/writing.md
+      - Public data repositories:
+          - EBI/ENA: duckdb-miint/insdc_ena.md
+          - NCBI: duckdb-miint/insdc_ncbi.md
+      - Alignment:
+          - Reference based alignment: duckdb-miint/alignment_reference.md
+          - Pairwise alignment: duckdb-miint/alignment_pairwise.md
+          - Multiple sequence alignment: duckdb-miint/alignment_multiple.md
+          - Alignment analysis: duckdb-miint/alignment_analysis.md
+      - Amplicon & community analysis:
+          - Quality control: duckdb-miint/qc.md
+          - Denoising: duckdb-miint/denoising.md
+          - Chimera checking: duckdb-miint/chimera.md
+          - Sequence clustering: duckdb-miint/clustering.md
+          - Sequence search: duckdb-miint/search.md
+          - Taxonomic classification: duckdb-miint/classification.md
+          - Profiling & feature tables: duckdb-miint/profiling.md
+      - Phylogeny & diversity:
+          - Phylogeny estimation: duckdb-miint/phylogeny.md
+          - Alpha & beta diversity: duckdb-miint/diversity.md
+      - Mass spectrometry:
+          - MassQL: duckdb-miint/massql.md
+      - Utilities: duckdb-miint/utilities.md
+      - Internals:
+          - Architecture: duckdb-miint/internals/architecture.md
+          - Embedded tools: duckdb-miint/internals/embedded-tools.md
+          - Per-sample pattern: duckdb-miint/internals/per-sample-pattern.md
+          - Arrow zero-copy: duckdb-miint/internals/arrow-zero-copy.md
+          - Reading tables & views: duckdb-miint/internals/reading-tables-views.md
+          - Testing: duckdb-miint/testing.md
+          - WASM testing: duckdb-miint/wasm-testing.md
+  - Qiita:
+      - qiita/index.md

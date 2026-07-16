@@ -1,0 +1,14 @@
+# Built site
+/site/
+
+# Synced project docs — pulled from their source repos at build time
+# (see scripts/sync-duckdb-miint-docs.sh). Never committed here; the source
+# repo is the single source of truth.
+/docs/duckdb-miint/
+
+# Python / tooling
+__pycache__/
+*.pyc
+.venv/
+.cache/
+.DS_Store

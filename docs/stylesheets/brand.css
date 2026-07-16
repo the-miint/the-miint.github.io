@@ -1,0 +1,190 @@
+/* ==========================================================================
+   MIINT brand palette
+   Derived directly from the organisation logo: a lightbulb built from binary
+   digits (data / intelligence, blues) with a mint plant growing from it
+   (biology, greens). Green leads, blue supports, navy is the ink.
+
+   To rebrand later, change only the values in this block — nothing downstream
+   references raw hex codes.
+   ========================================================================== */
+:root {
+  --miint-mint:        #2f7d52; /* deep leaf — primary */
+  --miint-mint-bright: #4d8f56; /* mid leaf */
+  --miint-mint-light:  #b2dfd3; /* pale leaf / bulb glow */
+  --miint-blue:        #308cbd; /* binary digits — secondary */
+  --miint-blue-deep:   #1f6f97; /* accessible blue on white */
+  --miint-navy:        #1a3141; /* bulb base — ink */
+  --miint-surface:     #eff8f8; /* faint mint wash */
+
+  --md-code-font: "JetBrains Mono", "Roboto Mono", monospace;
+}
+
+/* ---- Light scheme ------------------------------------------------------- */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        var(--miint-mint);
+  --md-primary-fg-color--light: var(--miint-mint-bright);
+  --md-primary-fg-color--dark:  #1f5a3a;
+  --md-primary-bg-color:        #ffffff;
+  --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
+
+  --md-accent-fg-color:         var(--miint-blue-deep);
+  --md-accent-fg-color--transparent: rgba(31, 111, 151, 0.1);
+
+  --md-typeset-a-color:         var(--miint-mint);
+
+  --md-footer-bg-color:         var(--miint-navy);
+  --md-footer-bg-color--dark:   #142634;
+}
+
+/* ---- Dark scheme -------------------------------------------------------- */
+[data-md-color-scheme="slate"] {
+  --md-hue: 205; /* nudge the dark greys toward navy, on-brand */
+
+  --md-primary-fg-color:        #33996b;
+  --md-primary-fg-color--light: #4d8f56;
+  --md-primary-fg-color--dark:  #14202a;
+  --md-primary-bg-color:        #ffffff;
+
+  --md-accent-fg-color:         #5bb8e6;
+  --md-accent-fg-color--transparent: rgba(91, 184, 230, 0.1);
+
+  --md-typeset-a-color:         #74d6a4;
+}
+
+/* The logo was drawn on white; present it on a white chip so it reads cleanly
+   on the green header and in both colour schemes — never keyed (that fringes). */
+.md-header__button.md-logo img {
+  height: 1.8rem;
+  width: 1.8rem;
+  padding: 3px;
+  background: #fff;
+  border-radius: 7px;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Landing hero
+   ========================================================================== */
+.miint-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 2rem 0 2.75rem;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  margin-bottom: 2.5rem;
+}
+
+.miint-hero__logo {
+  width: 200px;
+  height: auto;
+  flex: 0 0 auto;
+  background: #fff;
+  padding: 12px;
+  box-sizing: border-box;
+  border-radius: 28px;
+  border: 1px solid rgba(26, 49, 65, 0.10);
+  box-shadow: 0 10px 30px rgba(26, 49, 65, 0.14);
+}
+[data-md-color-scheme="slate"] .miint-hero__logo {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+}
+
+.miint-hero__text {
+  flex: 1 1 340px;
+  min-width: 280px;
+}
+
+.miint-hero__text h1 {
+  font-size: 2.4rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
+  background: linear-gradient(95deg, var(--miint-mint) 0%, var(--miint-blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.miint-hero__tagline {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+  margin: 0 0 0.75rem;
+}
+
+.miint-hero__lede {
+  font-size: 0.9rem;
+  color: var(--md-default-fg-color--light);
+  max-width: 46ch;
+  margin: 0 0 1.4rem;
+}
+
+.miint-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.miint-hero__cta .md-button--primary {
+  background: var(--miint-mint);
+  border-color: var(--miint-mint);
+}
+.miint-hero__cta .md-button--primary:hover {
+  background: var(--miint-blue-deep);
+  border-color: var(--miint-blue-deep);
+}
+
+@media screen and (max-width: 44.9em) {
+  .miint-hero { justify-content: center; text-align: center; }
+  .miint-hero__cta { justify-content: center; }
+  .miint-hero__logo { width: 150px; }
+}
+
+/* ==========================================================================
+   Project cards (Material .grid.cards) — brand accents
+   ========================================================================== */
+.md-typeset .grid.cards > ul > li {
+  border-radius: 0.6rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  transition: border-color 160ms, box-shadow 160ms, transform 160ms;
+}
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--miint-mint);
+  box-shadow: 0 6px 22px rgba(26, 49, 65, 0.10);
+  transform: translateY(-2px);
+}
+.md-typeset .grid.cards .twemoji svg,
+.md-typeset .grid.cards .lg svg {
+  fill: var(--miint-mint);
+}
+
+/* Small inline status pill, e.g. "In active development" */
+.miint-pill {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.5rem;
+  border-radius: 1rem;
+  vertical-align: middle;
+}
+.miint-pill--wip {
+  color: #8a5a00;
+  background: #fbeecb;
+}
+[data-md-color-scheme="slate"] .miint-pill--wip {
+  color: #ffcf7a;
+  background: rgba(255, 191, 90, 0.14);
+}
+.miint-pill--stable {
+  color: #1f5a3a;
+  background: var(--miint-mint-light);
+}
+[data-md-color-scheme="slate"] .miint-pill--stable {
+  color: #9ff0c4;
+  background: rgba(77, 143, 86, 0.2);
+}
