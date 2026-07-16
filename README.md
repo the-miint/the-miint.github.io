@@ -69,8 +69,13 @@ shipping.
 
 ## Keeping the site fresh when duckdb-miint's docs change
 
-So a docs change in duckdb-miint rebuilds this site automatically, add a step to
-duckdb-miint's CI that fires a `repository_dispatch` here:
+Every build re-clones duckdb-miint and pulls its latest docs, so the site just
+needs a rebuild to pick up upstream doc changes. Two mechanisms:
+
+- **Active: nightly rebuild.** `deploy.yml` runs on a `schedule:` (09:17 UTC
+  daily), so doc changes appear within ~24h with no cross-repo token.
+- **Optional: real-time.** For immediate updates, add a step to duckdb-miint's
+  CI that fires a `repository_dispatch` here the moment its docs change:
 
 ```yaml
 # in the-miint/duckdb-miint, on push to its default branch when docs/** changes

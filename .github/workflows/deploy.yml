@@ -6,6 +6,10 @@ on:
     branches: [main]
   # Manual trigger
   workflow_dispatch:
+  # Nightly rebuild so changes to synced project docs (duckdb-miint) show up
+  # even without a push here. Token-free fallback; ~24h worst-case staleness.
+  schedule:
+    - cron: "17 9 * * *" # 09:17 UTC daily (off the top of the hour to avoid delays)
   # Let a project repo (e.g. duckdb-miint) trigger a rebuild when its docs change.
   # In the project repo, POST a repository_dispatch with event_type: docs-updated.
   repository_dispatch:
