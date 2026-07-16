@@ -19,7 +19,6 @@ theme:
   name: material
   logo: assets/miint-mark.png
   favicon: assets/favicon.png
-  custom_dir: overrides
   icon:
     repo: fontawesome/brands/github
   font:
