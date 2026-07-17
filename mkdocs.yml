@@ -102,6 +102,11 @@ nav:
   - duckdb-miint:
       - duckdb-miint/index.md
       - Installation: duckdb-miint/installation.md
+      - Tutorials:
+          - duckdb-miint/onboarding-tutorials/introduction.md
+          - Beginner: duckdb-miint/onboarding-tutorials/beginner.md
+          - Intermediate: duckdb-miint/onboarding-tutorials/intermediate.md
+          - Advanced: duckdb-miint/onboarding-tutorials/advanced.md
       - Reading & writing:
           - Reading files: duckdb-miint/reading.md
           - Writing files: duckdb-miint/writing.md
