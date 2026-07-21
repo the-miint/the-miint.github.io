@@ -140,5 +140,6 @@ nav:
           - Reading tables & views: duckdb-miint/internals/reading-tables-views.md
           - Testing: duckdb-miint/testing.md
           - WASM testing: duckdb-miint/wasm-testing.md
+  - Playground: playground.md
   - Qiita:
       - qiita/index.md
