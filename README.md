@@ -46,7 +46,15 @@ Then:
 make serve      # sync docs + live-reload preview at http://127.0.0.1:8000
 make build      # strict production build into ./site
 make sync       # just re-pull the duckdb-miint docs
+make test       # build + playground browser tests
 ```
+
+`make test` runs `tests/playground/` in headless Chrome and also needs Node.js
+22.12+ (e.g. `conda install -c conda-forge nodejs` in the env) and Google Chrome
+or Chromium (`CHROME_PATH=<binary>` if it isn't `/usr/bin/google-chrome`). The
+tests fetch DuckDB-Wasm and the miint extension over the network, as the page
+does. CI runs them in `.github/workflows/playground-tests.yml` whenever the
+playground, its styles, or the tests change.
 
 **Fast local preview against a local duckdb-miint checkout** (skips the network
 clone — point at your working copy's `docs/`):

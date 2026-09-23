@@ -1,0 +1,15 @@
+{
+  "name": "miint-playground-tests",
+  "private": true,
+  "description": "Browser tests for docs/playground.md",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "puppeteer-core": "25.12.0"
+  }
+}

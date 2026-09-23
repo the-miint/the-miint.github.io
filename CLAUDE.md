@@ -26,6 +26,7 @@ Run inside the `miint-site` conda env (`conda activate miint-site`, or prefix wi
 make serve    # sync duckdb-miint docs + live-reload preview at http://127.0.0.1:8000
 make build    # sync + `mkdocs build --strict` into ./site (what CI runs)
 make sync     # only re-pull duckdb-miint docs into docs/duckdb-miint/
+make test     # build + playground browser tests (see Verification)
 ```
 
 - `MIINT_DOCS_SRC=../duckdb-miint/docs make serve`: sync from a local checkout instead of cloning
@@ -90,10 +91,20 @@ MkDocs 2.0 banner it prints during builds is informational, not an error.
 
 ## Verification
 
-There is no committed test suite. What exists today:
-- `mkdocs build --strict` is the gate CI enforces for content, nav, and config changes.
-- The playground has no automated tests. Verify changes by loading the page and exercising it
-  (boot to "Ready", a query, an error, history, clear), and say how it was verified.
+- `mkdocs build --strict` is the gate the deploy workflow enforces for content, nav, and config changes.
+- `make test` builds the site, then runs the playground's browser tests (`tests/playground/`: Node's
+  built-in runner plus puppeteer-core driving headless Chrome). It needs Node 22.12+ and Chrome;
+  set `CHROME_PATH` to use another binary and `SITE_DIR` to test another build.
+  `.github/workflows/playground-tests.yml` runs them on playground-related changes. It is
+  deliberately not a deploy gate.
+- The tests drive the page as a user does, never by reaching into its code. Write the failing test
+  first for any playground behavior change, and check that it fails against the old page. Use
+  `/__slow/<name>.csv` (in `harness.mjs`) for a statement whose duration must not depend on CPU speed.
+- They need the network (jsDelivr, ftp.microbio.me, ENA's Portal API). The warnings tests are
+  explicitly skipped, with the reason, when ENA's Portal API is unreachable. That skip is legitimate;
+  never make an unreachable dependency pass silently.
+- Not yet covered: history, continuation prompts, clear, BIGINT exactness, the `MAX_ROWS` cap.
+  Verify those by hand if you touch them.
 
 ## Rules
 

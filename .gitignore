@@ -6,7 +6,8 @@
 # repo is the single source of truth.
 /docs/duckdb-miint/
 
-# Python / tooling
+# Python / Node / tooling
+node_modules/
 __pycache__/
 *.pyc
 .venv/

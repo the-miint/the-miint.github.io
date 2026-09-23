@@ -1,0 +1,67 @@
+name: Playground tests
+
+# Browser tests for docs/playground.md (tests/playground/). Kept out of the
+# deploy workflow on purpose: they need jsDelivr, ftp.microbio.me and ENA's
+# Portal API, and an outage there should not block unrelated doc deploys.
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/playground.md
+      - docs/stylesheets/**
+      - mkdocs.yml
+      - requirements.txt
+      - tests/playground/**
+      - .github/workflows/playground-tests.yml
+  pull_request:
+    paths:
+      - docs/playground.md
+      - docs/stylesheets/**
+      - mkdocs.yml
+      - requirements.txt
+      - tests/playground/**
+      - .github/workflows/playground-tests.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # The nav references the synced pages, so the strict build needs them.
+      - name: Sync duckdb-miint docs (clones the source repo)
+        run: bash scripts/sync-duckdb-miint-docs.sh
+
+      - name: Build site
+        run: mkdocs build --strict
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tests/playground/package-lock.json
+
+      - name: Install test dependencies
+        working-directory: tests/playground
+        run: npm ci
+
+      # Preinstalled on GitHub's Ubuntu runners; the harness defaults to this path.
+      - name: Show Chrome version
+        run: /usr/bin/google-chrome --version
+
+      - name: Run playground tests
+        working-directory: tests/playground
+        run: npm test
