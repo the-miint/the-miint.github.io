@@ -32,17 +32,20 @@ distribution server. Your queries and data never leave this page.
   border: 1px solid var(--mp-border);
   background: var(--md-code-bg-color);
 }
-#miint-playground .mp-status[data-state="ready"] { border-color: #2e7d32; }
-#miint-playground .mp-status[data-state="error"] { border-color: #c62828; }
+#miint-playground .mp-status[data-state="ready"] { border-color: var(--md-primary-fg-color); }
+#miint-playground .mp-status[data-state="running"] { border-color: var(--md-accent-fg-color); }
+#miint-playground .mp-status[data-state="error"] { border-color: var(--miint-error); }
 #miint-playground .mp-dot {
   width: 0.6rem; height: 0.6rem; border-radius: 50%;
   background: var(--md-default-fg-color--light); flex: 0 0 auto;
 }
-#miint-playground .mp-status[data-state="loading"] .mp-dot {
+#miint-playground .mp-status[data-state="loading"] .mp-dot,
+#miint-playground .mp-status[data-state="running"] .mp-dot {
   animation: mp-pulse 1s ease-in-out infinite;
 }
-#miint-playground .mp-status[data-state="ready"] .mp-dot { background: #2e7d32; }
-#miint-playground .mp-status[data-state="error"] .mp-dot { background: #c62828; }
+#miint-playground .mp-status[data-state="ready"] .mp-dot { background: var(--md-primary-fg-color); }
+#miint-playground .mp-status[data-state="running"] .mp-dot { background: var(--md-accent-fg-color); }
+#miint-playground .mp-status[data-state="error"] .mp-dot { background: var(--miint-error); }
 @keyframes mp-pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 #miint-playground .mp-examples {
@@ -114,10 +117,17 @@ distribution server. Your queries and data never leave this page.
 #miint-playground table.mp-table th { background: var(--md-default-fg-color--lightest); }
 #miint-playground table.mp-table td.mp-null { color: var(--md-default-fg-color--light); font-style: italic; }
 #miint-playground .mp-error {
-  white-space: pre-wrap; color: #c62828;
+  white-space: pre-wrap; color: var(--miint-error);
   font-family: var(--md-code-font-family, monospace);
 }
 #miint-playground .mp-note { color: var(--md-default-fg-color--light); margin-top: 0.25rem; }
+#miint-playground .mp-warning { white-space: pre-wrap; color: var(--miint-warning); margin-top: 0.25rem; }
+#miint-playground .mp-running { color: var(--md-accent-fg-color); }
+#miint-playground .mp-running::before {
+  content: ""; display: inline-block; width: 0.5rem; height: 0.5rem;
+  border-radius: 50%; margin-right: 0.45rem; background: var(--md-accent-fg-color);
+  animation: mp-pulse 1s ease-in-out infinite;
+}
 </style>
 
 <div id="miint-playground">
@@ -175,6 +185,7 @@ const EXAMPLES = [
 ];
 
 let conn = null;
+let warningsSeen = 0;   // miint_warnings() rows already shown
 const history = [];
 let histIdx = 0;   // points one past the last entry = "fresh line"
 
@@ -264,6 +275,51 @@ function renderTableInto(out, table, ms) {
   out.appendChild(note);
 }
 
+// While a statement runs, show a live elapsed timer where its output will
+// appear and mirror it in the status bar, so a slow statement (e.g. one that
+// downloads from ENA) reads as busy rather than hung. The query executes in the
+// DuckDB worker, so this main-thread timer keeps ticking. Returns a function
+// that removes the indicator and restores the previous status.
+function showRunning(out, t0) {
+  const line = document.createElement('div');
+  line.className = 'mp-note mp-running';
+  out.appendChild(line);
+  const prev = { state: els.status.dataset.state, text: els.statusText.textContent };
+  const tick = () => {
+    const s = ((performance.now() - t0) / 1000).toFixed(1);
+    line.textContent = `running… ${s} s`;
+    setStatus('running', `Running… ${s} s`);
+  };
+  tick();
+  scrollBottom();
+  const timer = setInterval(tick, 100);
+  return () => { clearInterval(timer); line.remove(); setStatus(prev.state, prev.text); };
+}
+
+// miint reports skipped work (e.g. an ENA run whose download failed) as a
+// warning, not an error: the statement still succeeds, possibly with 0 rows.
+// Those warnings go to stderr, which here is only the devtools console, so show
+// any new ones under the statement that raised them. miint_warnings() is
+// session-scoped and only grows (unless the log is truncated), so skip the rows
+// already shown.
+async function renderNewWarningsInto(out) {
+  let messages;
+  try {
+    const rows = await conn.query('SELECT message FROM miint_warnings() ORDER BY timestamp');
+    messages = rows.toArray().map(r => r.message);
+  } catch {
+    return;   // never let the warnings lookup mask the statement's own result
+  }
+  if (messages.length < warningsSeen) warningsSeen = 0;
+  for (const m of messages.slice(warningsSeen)) {
+    const w = document.createElement('div');
+    w.className = 'mp-warning';
+    w.textContent = m;
+    out.appendChild(w);
+  }
+  warningsSeen = messages.length;
+}
+
 function renderErrorInto(out, err) {
   const pre = document.createElement('div');
   pre.className = 'mp-error';
@@ -293,12 +349,15 @@ async function submit() {
 
   els.input.disabled = true;
   const t0 = performance.now();
+  const stopRunning = showRunning(out, t0);
   try {
     const result = await conn.query(sql);
     renderTableInto(out, result, performance.now() - t0);
   } catch (err) {
     renderErrorInto(out, err);
   } finally {
+    await renderNewWarningsInto(out);
+    stopRunning();
     els.input.disabled = false;
     els.input.focus();
     scrollBottom();

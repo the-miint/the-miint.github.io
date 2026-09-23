@@ -15,6 +15,8 @@
   --miint-blue-deep:   #1f6f97; /* accessible blue on white */
   --miint-navy:        #1a3141; /* bulb base — ink */
   --miint-surface:     #eff8f8; /* faint mint wash */
+  --miint-error:       #c62828; /* errors (not a logo colour) */
+  --miint-warning:     #8a5a00; /* warnings (not a logo colour) */
 
   --md-code-font: "JetBrains Mono", "Roboto Mono", monospace;
 }
@@ -49,6 +51,8 @@
   --md-accent-fg-color--transparent: rgba(91, 184, 230, 0.1);
 
   --md-typeset-a-color:         #74d6a4;
+
+  --miint-warning:              #ffcf7a;
 }
 
 /* The logo was drawn on white; present it on a white chip so it reads cleanly
