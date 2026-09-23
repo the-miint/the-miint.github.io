@@ -9,7 +9,9 @@ Built with [MkDocs](https://www.mkdocs.org/) +
 ## How it works
 
 This repo holds the **site shell**: the landing page, the Qiita overview, the
-theme, and the brand. It does **not** hold the duckdb-miint documentation.
+in-browser [Playground](https://the-miint.github.io/playground/) (DuckDB-Wasm
+plus the miint extension, in `docs/playground.md`), the theme, and the brand.
+It does **not** hold the duckdb-miint documentation.
 
 Each project's docs are the **single source of truth in that project's own
 repo**, beside the code they document. They are pulled in at build time, so the
@@ -59,8 +61,11 @@ Pin a specific branch/tag/sha of the docs with `MIINT_DOCS_REF=<ref>`.
 
 `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push
 to `main` (and on a `docs-updated` `repository_dispatch`, see below). It runs
-`mkdocs build --strict`, so a broken link fails the build loudly rather than
-shipping.
+`mkdocs build --strict` with the stricter checks under `validation:` in
+`mkdocs.yml`, so a broken link or `#anchor`, a nav entry pointing at a missing
+page, or a synced page missing from the nav fails the build loudly rather than
+shipping. When a duckdb-miint doc change trips one of these, the live site stays
+on its last good build until the nav here (or the doc upstream) is fixed.
 
 **One-time GitHub setup** (after the repo exists on GitHub):
 
@@ -89,7 +94,7 @@ needs a rebuild to pick up upstream doc changes. Two mechanisms:
 ```
 
 `SITE_DISPATCH_TOKEN` is a fine-grained PAT with **Contents: read** and
-**Metadata: read** on this repo. (Not yet wired up — see the launch checklist.)
+**Metadata: read** on this repo. (Not yet wired up in duckdb-miint's CI.)
 
 ## Adding another project
 

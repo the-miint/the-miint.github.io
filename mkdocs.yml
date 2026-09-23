@@ -78,6 +78,12 @@ markdown_extensions:
   - toc:
       permalink: true
       permalink_title: Anchor link to this section
+      # GitHub-style heading ids (one "-" per space, Unicode kept), so the
+      # #anchor links in the synced duckdb-miint docs, which are written to
+      # work on GitHub, also resolve here.
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.inlinehilite
@@ -96,6 +102,15 @@ markdown_extensions:
 
 plugins:
   - search
+
+# Make `mkdocs build --strict` fail when the hand-maintained nav falls behind
+# the synced upstream docs (a page missing from nav) or an #anchor link is
+# broken. Both default to INFO, which let them ship unnoticed.
+validation:
+  nav:
+    omitted_files: warn
+  links:
+    anchors: warn
 
 nav:
   - Home: index.md
@@ -126,9 +141,12 @@ nav:
           - Sequence search: duckdb-miint/search.md
           - Taxonomic classification: duckdb-miint/classification.md
           - Profiling & feature tables: duckdb-miint/profiling.md
+          - Absolute quantification: duckdb-miint/absolute_quantification.md
       - Phylogeny & diversity:
           - Phylogeny estimation: duckdb-miint/phylogeny.md
           - Alpha & beta diversity: duckdb-miint/diversity.md
+          - Community simulation: duckdb-miint/simulation.md
+          - Multi-omics integration: duckdb-miint/multiomics.md
       - Mass spectrometry:
           - MassQL: duckdb-miint/massql.md
       - Utilities: duckdb-miint/utilities.md
@@ -138,6 +156,7 @@ nav:
           - Per-sample pattern: duckdb-miint/internals/per-sample-pattern.md
           - Arrow zero-copy: duckdb-miint/internals/arrow-zero-copy.md
           - Reading tables & views: duckdb-miint/internals/reading-tables-views.md
+          - DuckDB engine notes: duckdb-miint/internals/duckdb-engine-notes.md
           - Testing: duckdb-miint/testing.md
           - WASM testing: duckdb-miint/wasm-testing.md
   - Playground: playground.md
