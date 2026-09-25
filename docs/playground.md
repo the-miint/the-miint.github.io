@@ -153,15 +153,15 @@ distribution server. Your queries and data never leave this page.
 </div>
 
 <script type="module">
-import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1-dev57.0/+esm';
+import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1-dev64.0/+esm';
 
 // --- The runtime and the extension are an ABI-matched pair. ---------------
-// The duckdb-wasm version above reports DuckDB v1.5.4 @ 08e34c447b, matching
+// The duckdb-wasm version above reports DuckDB v1.5.5 @ d8cdaa33fd, matching
 // the duckdb/ submodule. We load the miint wasm_eh build from the "tagged"
 // stream of the extension repo — it carries the wasm binary from the latest
 // release tag, keyed by DuckDB version, so this URL stays stable across
 // releases and always resolves to the newest tagged build.
-const EXT_VERSION = 'v1.5.4';
+const EXT_VERSION = 'v1.5.5';
 const EXT_BASE = 'https://ftp.microbio.me/pub/miint/tagged';
 const MAX_ROWS = 1000;
 const PROMPT = 'miint=#';   // statement start (psql-style)
