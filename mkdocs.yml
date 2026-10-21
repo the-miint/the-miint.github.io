@@ -160,5 +160,8 @@ nav:
           - Testing: duckdb-miint/testing.md
           - WASM testing: duckdb-miint/wasm-testing.md
   - Playground: playground.md
+  # RYpe is a static app vendored under docs/rype/ (not a Markdown page), so the
+  # nav links to its deployed URL. See README.md, "RYpe host filter".
+  - RYpe: https://the-miint.github.io/rype/
   - Qiita:
       - qiita/index.md
