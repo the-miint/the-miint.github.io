@@ -148,6 +148,7 @@ nav:
           - Alpha & beta diversity: duckdb-miint/diversity.md
           - Community simulation: duckdb-miint/simulation.md
           - Multi-omics integration: duckdb-miint/multiomics.md
+          - Sample classification & regression: duckdb-miint/sample_classifier.md
       - Mass spectrometry:
           - MassQL: duckdb-miint/massql.md
       - Utilities: duckdb-miint/utilities.md
