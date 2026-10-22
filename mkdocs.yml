@@ -142,6 +142,7 @@ nav:
           - Taxonomic classification: duckdb-miint/classification.md
           - Profiling & feature tables: duckdb-miint/profiling.md
           - Absolute quantification: duckdb-miint/absolute_quantification.md
+          - Source tracking: duckdb-miint/source_tracking.md
       - Phylogeny & diversity:
           - Phylogeny estimation: duckdb-miint/phylogeny.md
           - Alpha & beta diversity: duckdb-miint/diversity.md
