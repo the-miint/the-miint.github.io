@@ -142,6 +142,7 @@ nav:
           - Taxonomic classification: duckdb-miint/classification.md
           - Profiling & feature tables: duckdb-miint/profiling.md
           - Absolute quantification: duckdb-miint/absolute_quantification.md
+          - Source tracking: duckdb-miint/source_tracking.md
       - Phylogeny & diversity:
           - Phylogeny estimation: duckdb-miint/phylogeny.md
           - Alpha & beta diversity: duckdb-miint/diversity.md
@@ -161,5 +162,8 @@ nav:
           - Testing: duckdb-miint/testing.md
           - WASM testing: duckdb-miint/wasm-testing.md
   - Playground: playground.md
+  # RYpe is a static app vendored under docs/rype/ (not a Markdown page), so the
+  # nav links to its deployed URL. See README.md, "RYpe host filter".
+  - RYpe: https://the-miint.github.io/rype/
   - Qiita:
       - qiita/index.md

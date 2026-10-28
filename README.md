@@ -10,8 +10,10 @@ Built with [MkDocs](https://www.mkdocs.org/) +
 
 This repo holds the **site shell**: the landing page, the Qiita overview, the
 in-browser [Playground](https://the-miint.github.io/playground/) (DuckDB-Wasm
-plus the miint extension, in `docs/playground.md`), the theme, and the brand.
-It does **not** hold the duckdb-miint documentation.
+plus the miint extension, in `docs/playground.md`), the in-browser
+[RYpe human host filter](https://the-miint.github.io/rype/) (`docs/rype/`, see
+below), the theme, and the brand. It does **not** hold the duckdb-miint
+documentation.
 
 Each project's docs are the **single source of truth in that project's own
 repo**, beside the code they document. They are pulled in at build time, so the
@@ -103,6 +105,46 @@ needs a rebuild to pick up upstream doc changes. Two mechanisms:
 
 `SITE_DISPATCH_TOKEN` is a fine-grained PAT with **Contents: read** and
 **Metadata: read** on this repo. (Not yet wired up in duckdb-miint's CI.)
+
+## RYpe host filter (`docs/rype/`)
+
+`docs/rype/` is a self-contained static app (HTML, JS, and two wasm modules)
+that MkDocs copies verbatim to `/rype/`. It needs no build step here and no
+special headers (no SharedArrayBuffer), so GitHub Pages serves it as is. The
+reference indexes (a RYpe human pangenome index built from the 94 HPRC release 1
+haplotype assemblies plus hg38, T2T-CHM13 v2.0 and the GENCODE v47 transcripts, and a T2T-CHM13 v2.0 minimap2
+index) are fetched from `ftp.microbio.me/pub/rype/host-filter/v1/`,
+which serves CORS and Range headers, and, with the user's consent, is cached in
+the browser's private storage.
+
+The app's repository is **https://github.com/the-miint/rype-web**. The files
+here are built artifacts vendored from its `web/` directory; do not edit them
+here. What produces them:
+
+| File | Source | Built by |
+|---|---|---|
+| `rype_mask.{js,wasm}` | RYpe (submodule `third_party/RYpe`) + `src/mask.c`, `src/gz.c`, zlib | `build.sh` (cargo `wasm32-unknown-emscripten` + emcc) |
+| `mm_filter.{js,wasm}` | the-miint/minimap2 (submodule `third_party/minimap2`) + `src/mm.c`, zlib | `build_mm2.sh` + `build.sh` (emcc) |
+| `vendor/anime.umd.js` | anime.js 4.5.0, unminified UMD bundle from npm | copied |
+| `THIRD_PARTY_LICENSES.txt` | licenses of everything above | copied by `build.sh` from rype-web's `THIRD_PARTY_LICENSES.md` |
+| everything else | rype-web `web/` | hand-written |
+
+The `.js` files next to the `.wasm` files are Emscripten's generated runtime
+glue, not hand-written code.
+
+Requirements for users: desktop Chrome or Chromium Edge (Firefox and Safari
+untested), about 16 GB of RAM for the default 4 + 4 workers, and about 15 GB of
+free browser storage if the index is kept (1.8 GB RYpe index plus 9 GB minimap2
+index, downloaded once); declining the download streams the index each run.
+
+To update: in a rype-web checkout run `bash build.sh` and `npm test`, then
+
+```bash
+rsync -a --delete --exclude package.json <rype-web>/web/ docs/rype/
+```
+
+The nav entry is an absolute URL because MkDocs nav items must otherwise be
+Markdown pages.
 
 ## Adding another project
 
