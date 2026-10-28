@@ -148,12 +148,15 @@ nav:
           - Alpha & beta diversity: duckdb-miint/diversity.md
           - Community simulation: duckdb-miint/simulation.md
           - Multi-omics integration: duckdb-miint/multiomics.md
+          - Sample classification & regression: duckdb-miint/sample_classifier.md
+          - scikit-bio methods: duckdb-miint/scikit_bio.md
       - Mass spectrometry:
           - MassQL: duckdb-miint/massql.md
       - Utilities: duckdb-miint/utilities.md
       - Internals:
           - Architecture: duckdb-miint/internals/architecture.md
           - Embedded tools: duckdb-miint/internals/embedded-tools.md
+          - Build system: duckdb-miint/internals/build-system.md
           - Per-sample pattern: duckdb-miint/internals/per-sample-pattern.md
           - Arrow zero-copy: duckdb-miint/internals/arrow-zero-copy.md
           - Reading tables & views: duckdb-miint/internals/reading-tables-views.md
