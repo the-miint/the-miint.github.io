@@ -16,6 +16,14 @@ distribution server. Your queries and data never leave this page.
     extension for in-browser exploration, not a signed release. The
     extension is ~16 MB and downloads once when the page loads.
 
+!!! info "Still on DuckDB v1.5.5"
+    duckdb-miint now targets DuckDB v2.0, but this playground runs DuckDB
+    v1.5.5 and miint v1.5.5. Moving it to v2.0 is blocked on
+    [duckdb/duckdb-wasm#2290](https://github.com/duckdb/duckdb-wasm/issues/2290):
+    the in-browser DuckDB v2.0 build reports a development version, so it
+    refuses extensions built for the v2.0.0 release. Progress is tracked in
+    [the-miint/duckdb-miint#371](https://github.com/the-miint/duckdb-miint/issues/371).
+
 <style>
 #miint-playground {
   --mp-border: var(--md-default-fg-color--lightest);
