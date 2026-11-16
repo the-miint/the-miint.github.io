@@ -133,6 +133,8 @@ nav:
           - Pairwise alignment: duckdb-miint/alignment_pairwise.md
           - Multiple sequence alignment: duckdb-miint/alignment_multiple.md
           - Alignment analysis: duckdb-miint/alignment_analysis.md
+      - Genomes:
+          - Gene prediction: duckdb-miint/gene_prediction.md
       - Amplicon & community analysis:
           - Quality control: duckdb-miint/qc.md
           - Denoising: duckdb-miint/denoising.md
