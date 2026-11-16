@@ -14,15 +14,7 @@ distribution server. Your queries and data never leave this page.
     This console loads an **unsigned** WebAssembly build of miint
     (`wasm_eh`) served from `ftp.microbio.me`. It is a preview of the
     extension for in-browser exploration, not a signed release. The
-    extension is ~16 MB and downloads once when the page loads.
-
-!!! info "Still on DuckDB v1.5.5"
-    duckdb-miint now targets DuckDB v2.0, but this playground runs DuckDB
-    v1.5.5 and miint v1.5.5. Moving it to v2.0 is blocked on
-    [duckdb/duckdb-wasm#2290](https://github.com/duckdb/duckdb-wasm/issues/2290):
-    the in-browser DuckDB v2.0 build reports a development version, so it
-    refuses extensions built for the v2.0.0 release. Progress is tracked in
-    [the-miint/duckdb-miint#371](https://github.com/the-miint/duckdb-miint/issues/371).
+    extension is ~14 MB and downloads once when the page loads.
 
 <style>
 #miint-playground {
@@ -161,15 +153,15 @@ distribution server. Your queries and data never leave this page.
 </div>
 
 <script type="module">
-import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1-dev64.0/+esm';
+import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.33.1-dev118.0/+esm';
 
 // --- The runtime and the extension are an ABI-matched pair. ---------------
-// The duckdb-wasm version above reports DuckDB v1.5.5 @ d8cdaa33fd, matching
+// The duckdb-wasm version above reports DuckDB v2.0.0 @ d54cbbe3df, matching
 // the duckdb/ submodule. We load the miint wasm_eh build from the "tagged"
 // stream of the extension repo — it carries the wasm binary from the latest
 // release tag, keyed by DuckDB version, so this URL stays stable across
 // releases and always resolves to the newest tagged build.
-const EXT_VERSION = 'v1.5.5';
+const EXT_VERSION = 'v2.0.0';
 const EXT_BASE = 'https://ftp.microbio.me/pub/miint/tagged';
 const MAX_ROWS = 1000;
 const PROMPT = 'miint=#';   // statement start (psql-style)
@@ -418,17 +410,18 @@ async function boot() {
       return;
     }
 
-    setStatus('loading', `Loading miint ${EXT_VERSION} (~16 MB, first time only)…`);
+    setStatus('loading', `Loading miint for DuckDB ${EXT_VERSION} (~14 MB, first time only)…`);
     const extUrl = `${EXT_BASE}/${EXT_VERSION}/${platform}/miint.duckdb_extension.wasm`;
     await conn.query(`LOAD '${extUrl}'`);
-    const build = (await conn.query('SELECT miint_version() AS v')).toArray()[0].v;
+    const miintVersion = (await conn.query('SELECT miint_version() AS v')).toArray()[0].v;
+    const duckdbVersion = (await conn.query('SELECT version() AS v')).toArray()[0].v;
 
-    setStatus('ready', `Ready — DuckDB ${platform} · miint ${EXT_VERSION} (build ${build}).`);
+    setStatus('ready', `Ready — DuckDB ${duckdbVersion} (${platform}) · miint ${miintVersion}.`);
 
     const banner = document.createElement('div');
     banner.className = 'mp-banner';
     banner.textContent =
-      `miint ${EXT_VERSION} (build ${build}) on DuckDB ${platform} — everything runs in your browser.\n` +
+      `miint ${miintVersion} on DuckDB ${duckdbVersion} (${platform}) — everything runs in your browser.\n` +
       `Type SQL and press Enter (statements end with ;). Shift+Enter for a newline, ⌘/Ctrl+Enter to force-run, ↑/↓ for history.`;
     appendToScrollback(banner);
 
