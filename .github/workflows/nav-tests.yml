@@ -1,0 +1,51 @@
+name: Nav tests
+
+# Tests for hooks/duckdb_miint_nav.py (tests/nav/), which builds the duckdb-miint
+# nav from upstream's table of contents, then the strict build that runs the
+# hook on duckdb-miint's current docs, as the deploy does.
+on:
+  push:
+    branches: [main]
+    paths:
+      - hooks/**
+      - tests/nav/**
+      - mkdocs.yml
+      - requirements.txt
+      - scripts/sync-duckdb-miint-docs.sh
+      - .github/workflows/nav-tests.yml
+  pull_request:
+    paths:
+      - hooks/**
+      - tests/nav/**
+      - mkdocs.yml
+      - requirements.txt
+      - scripts/sync-duckdb-miint-docs.sh
+      - .github/workflows/nav-tests.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Test the nav hook
+        run: python -m unittest discover -s tests/nav -v
+
+      - name: Sync duckdb-miint docs (clones the source repo)
+        run: bash scripts/sync-duckdb-miint-docs.sh
+
+      - name: Build site
+        run: mkdocs build --strict
