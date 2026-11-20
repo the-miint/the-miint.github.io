@@ -26,7 +26,7 @@ Run inside the `miint-site` conda env (`conda activate miint-site`, or prefix wi
 make serve    # sync duckdb-miint docs + live-reload preview at http://127.0.0.1:8000
 make build    # sync + `mkdocs build --strict` into ./site (what CI runs)
 make sync     # only re-pull duckdb-miint docs into docs/duckdb-miint/
-make test     # build + playground browser tests (see Verification)
+make test     # build + nav hook tests + playground browser tests (see Verification)
 ```
 
 - `MIINT_DOCS_SRC=../duckdb-miint/docs make serve`: sync from a local checkout instead of cloning
@@ -43,12 +43,23 @@ make test     # build + playground browser tests (see Verification)
 - The sync script applies build-time transforms to the copy: drops `UPDATING.md`, renames
   `table_of_contents.md` → `index.md`, points `../THIRD_PARTY_LICENSES.md` at GitHub, and rewrites
   the tutorials' `../docs/` links. A link that breaks only on this site usually needs a transform here.
-- The duckdb-miint section of `nav` in `mkdocs.yml` hand-lists upstream filenames, and `validation:`
-  in `mkdocs.yml` makes `--strict` fail when the two drift apart:
-  - An upstream **rename or removal** fails with "A reference to ... is included in the 'nav'
-    configuration, which is not found".
-  - An upstream **addition** fails with "pages exist in the docs directory, but are not included in
-    the 'nav' configuration". Add it where upstream's `table_of_contents.md` lists it.
+- The duckdb-miint task sections of `nav` are generated, not hand-listed: `hooks/duckdb_miint_nav.py`
+  replaces the `(duckdb-miint table of contents)` marker in `mkdocs.yml` with the `## Heading`
+  sections of `- [Title](page.md)` items in upstream's `table_of_contents.md` (the synced
+  `index.md`). So a page upstream adds there ships with upstream's heading, title and order; don't
+  copy those sections back into `mkdocs.yml`. Prose sections, which contain anything besides linked
+  items, are skipped. Tests: `tests/nav/`.
+- Index, Installation, Tutorials and Internals stay hand-listed. Upstream's table of contents
+  doesn't list internals pages, so any `internals/*.md` not listed replaces the
+  `(unlisted duckdb-miint internals pages)` marker, titled by its H1. List it by hand to choose
+  its title and place.
+- `validation:` in `mkdocs.yml` makes `--strict` fail on what the hook can't place:
+  - A hand-listed page upstream **renames or removes** fails with "A reference to ... is included
+    in the 'nav' configuration, which is not found".
+  - A page upstream **adds** in neither its table of contents nor `internals/` fails with "pages
+    exist in the docs directory, but are not included in the 'nav' configuration". Ask upstream to
+    list it in `table_of_contents.md`, or hand-list it here.
+  - A table of contents with no task sections, or a missing marker, fails with the hook's error.
 - `--strict` also fails on broken links, including broken `#anchor` links. When the broken link is in
   upstream content, fix it in the-miint/duckdb-miint. Use a sync-script transform only for links that
   break solely on this site.
@@ -92,7 +103,10 @@ MkDocs 2.0 banner it prints during builds is informational, not an error.
 ## Verification
 
 - `mkdocs build --strict` is the gate the deploy workflow enforces for content, nav, and config changes.
-- `make test` builds the site, then runs the playground's browser tests (`tests/playground/`: Node's
+- `tests/nav/` (stdlib `unittest`: `python -m unittest discover -s tests/nav`) builds small sites with
+  the real nav hook under the deploy's strict validation, offline. `.github/workflows/nav-tests.yml`
+  runs them, then the strict build on current upstream docs, on nav-related changes.
+- `make test` builds the site, runs the nav hook tests, then the playground's browser tests (`tests/playground/`: Node's
   built-in runner plus puppeteer-core driving headless Chrome). It needs Node 22.12+ and Chrome;
   set `CHROME_PATH` to use another binary and `SITE_DIR` to test another build.
   `.github/workflows/playground-tests.yml` runs them on playground-related changes. It is

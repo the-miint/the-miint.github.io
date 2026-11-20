@@ -9,7 +9,7 @@ help:
 	@echo "make sync    - pull duckdb-miint docs into docs/duckdb-miint/ (gitignored)"
 	@echo "make serve   - sync + live-reload preview at http://127.0.0.1:8000"
 	@echo "make build   - sync + strict production build into ./site"
-	@echo "make test    - build + playground browser tests (tests/playground/)"
+	@echo "make test    - build + nav hook tests (tests/nav/) + playground browser tests (tests/playground/)"
 	@echo "make clean    - remove synced docs and built site"
 
 sync:
@@ -22,6 +22,7 @@ build: sync
 	mkdocs build --strict
 
 test: build
+	python -m unittest discover -s tests/nav
 	npm --prefix tests/playground install --no-audit --no-fund
 	npm --prefix tests/playground test
 

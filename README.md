@@ -48,10 +48,11 @@ Then:
 make serve      # sync docs + live-reload preview at http://127.0.0.1:8000
 make build      # strict production build into ./site
 make sync       # just re-pull the duckdb-miint docs
-make test       # build + playground browser tests
+make test       # build + nav hook tests + playground browser tests
 ```
 
-`make test` runs `tests/playground/` in headless Chrome and also needs Node.js
+`make test` runs the nav hook's offline tests (`tests/nav/`, see Deployment)
+and `tests/playground/` in headless Chrome. The latter also needs Node.js
 22.12+ (e.g. `conda install -c conda-forge nodejs` in the env) and Google Chrome
 or Chromium (`CHROME_PATH=<binary>` if it isn't `/usr/bin/google-chrome`). The
 tests fetch DuckDB-Wasm and the miint extension over the network, as the page
@@ -76,6 +77,14 @@ to `main` (and on a `docs-updated` `repository_dispatch`, see below). It runs
 page, or a synced page missing from the nav fails the build loudly rather than
 shipping. When a duckdb-miint doc change trips one of these, the live site stays
 on its last good build until the nav here (or the doc upstream) is fixed.
+
+The duckdb-miint task sections of the nav aren't hand-listed: the MkDocs hook
+`hooks/duckdb_miint_nav.py` builds them from upstream's `table_of_contents.md`
+at every build, and appends any `internals/` page that `mkdocs.yml` doesn't
+list. So a page upstream adds there ships without a nav edit here. Only a page
+in neither place fails the build as missing from the nav.
+`.github/workflows/nav-tests.yml` tests the hook (`tests/nav/`) and runs the
+strict build when the hook, the nav or the sync script changes.
 
 **One-time GitHub setup** (after the repo exists on GitHub):
 
