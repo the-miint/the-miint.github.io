@@ -162,6 +162,7 @@ nav:
           - Per-sample pattern: duckdb-miint/internals/per-sample-pattern.md
           - Arrow zero-copy: duckdb-miint/internals/arrow-zero-copy.md
           - Reading tables & views: duckdb-miint/internals/reading-tables-views.md
+          - SRA reader: duckdb-miint/internals/sra-reader.md
           - DuckDB engine notes: duckdb-miint/internals/duckdb-engine-notes.md
           - Releasing: duckdb-miint/internals/releasing.md
           - Testing: duckdb-miint/testing.md
